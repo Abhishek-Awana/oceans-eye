@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import './ControlBoard.css';
 
 const ControlBoard = ({
+  
   localTime,
   timezone,
   showLocalTime,
@@ -15,6 +16,8 @@ const ControlBoard = ({
   handleStyleChange,
 }) => {
   return (
+
+    
     <div className="control-board">
       <div className="control-board__header">Control Board</div>
       <div className='controlboard_second'>

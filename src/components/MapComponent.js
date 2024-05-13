@@ -5,6 +5,8 @@ import ports from '../data/ports';
 import ControlBoard from './ControlBoard';
 import shipData from '../data/shipData';
 import './ShipPopup.css';
+import COUNTRYCODES from '../data/IsoCountryCode'
+let initMap;
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXNwYWNlc2VydmljZSIsImEiOiJjbHZ1dHZjdTQwMDhrMm1uMnoxdWRibzQ4In0.NaprcMBbdX07f4eXXdr-lw';
 
@@ -36,7 +38,6 @@ const MapComponent = () => {
   
       return { now, userTimezone };
     } else {
-      // Handle the case where the API response doesn't have the expected structure
       console.error('Unexpected API response:', data);
       return { now: '', userTimezone: '' };
     }
@@ -85,7 +86,6 @@ const MapComponent = () => {
     initMap.on('load', () => {
       setMapLoaded(true);
 
-      // Adding ships on map 
       initMap.addSource('ships', {
         type: 'geojson',
         data: {
@@ -114,6 +114,9 @@ const MapComponent = () => {
           'circle-stroke-color': '#fff',
         },
       });
+
+     
+
 
       initMap.on('click', 'ships', (e) => {
         const coordinates = e.features[0].geometry.coordinates;
@@ -217,13 +220,8 @@ const MapComponent = () => {
         const coordinates = e.features[0].geometry.coordinates;
         const portName = e.features[0].properties.port_name;
 
-        // new mapboxgl.Popup()
-        //   .setLngLat(coordinates)
-        //   .setHTML(`${portName}`)
-        //   .addTo(initMap);
-
         new mapboxgl.Popup({
-          className: 'port-popup', // Add the custom CSS class
+          className: 'port-popup', 
         })
           .setLngLat(coordinates)
           .setHTML(`
@@ -252,8 +250,34 @@ const MapComponent = () => {
       }
     });
 
+    if (showDayNightEffect === true) {
+      const nightCountries = getNightCountry();
+    
+      // initMap.( () => {
+        initMap.addLayer({
+          id: 'night-layer',
+          type: 'fill',
+          source: {
+            type: 'vector',
+            url: 'mapbox://mapbox.boundaries-3'
+          },
+          'source-layer': 'admin',
+          paint: {
+            'fill-color': '#FF0000',
+            'fill-opacity': 0.5
+          },
+          filter: ['in', 'ISO_3166_1_alpha_3',...(nightCountries)]
+        });
+      // });
+    } else {
+      if (initMap.getLayer('night-layer')) {
+        initMap.removeLayer('night-layer');
+      }
+    }
+
+
     return () => initMap.remove();
-  }, [showLocalTime, selectedStyle]);
+  }, [showLocalTime, selectedStyle, showDayNightEffect]);
 
   useEffect(() => {
     if (map && timezone && showDayNightEffect) {
@@ -261,14 +285,6 @@ const MapComponent = () => {
     }
   }, [map, timezone, showDayNightEffect]);
 
-  // const fetchLocalTimeAndTimezone = async (lng, lat) => {
-  //   const { now, userTimezone } = await getLocalTimeAndTimezone(lng, lat);
-  //   setLocalTime(now);
-  //   setTimezone(userTimezone);
-  //   if (map && showDayNightEffect) {
-  //     updateMapStyle(map, userTimezone);
-  //   }
-  // };
 
   const fetchLocalTimeAndTimezone = async (lng, lat) => {
     try {
@@ -286,6 +302,40 @@ const MapComponent = () => {
   const handleShowLocalTimeChange = (e) => {
     setShowLocalTime(e.target.checked);
   };
+
+  function getSunriseTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 6, 0, 0); 
+}
+
+function getSunsetTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0); 
+}
+
+function getTimezoneOffset(countryCode) {
+    if (countryCode === "USA") {
+        return -4; // Assuming Eastern Time (EDT) is UTC-4
+    } else if (countryCode === "GBR") {
+        return 1; // Assuming British Summer Time (BST) is UTC+1
+    } else {
+        return 0; // Default to UTC
+    }
+}
+
+
+function getNightCountry() {
+  return COUNTRYCODES.filter((countryCode) => {
+    let now = new Date();
+    now.setUTCHours(now.getUTCHours() + getTimezoneOffset(countryCode));
+    let sunset = getSunsetTime(now);
+    let sunrise = getSunriseTime(now);
+
+    if (now >= sunset || now <= sunrise) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
 
   const handleShowDayNightEffectChange = (e) => {
     setShowDayNightEffect(e.target.checked);
