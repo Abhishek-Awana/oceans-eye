@@ -39,7 +39,6 @@ const ControlBoard = ({
           </div>
         )}
       </div>
-      {/* div.ControlBoard */}
       <div className="control-board__section">
   <div className="control-board__radio-group">
     <input

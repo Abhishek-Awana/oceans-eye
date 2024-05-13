@@ -1,6 +1,5 @@
 import './App.css';
 import MapComponent from './components/MapComponent';
-import ControlBoard from './components/ControlBoard';
 
 function App() {
 
