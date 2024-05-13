@@ -1,0 +1,92 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: #2e2e2e; */
+    color:#81bcb0;
+}
+body{
+    font-family: 'Montserrat';
+}
+
+.control-board {
+    background-color: #101115;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 100vw;
+    /* display: flex; */
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .control-board__header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    margin-left: 40rem;
+    justify-content: center;
+    align-items: center;
+    /* position: ; */
+  }
+  
+  .control-board__section {
+    margin-left: 20px;
+    border-radius: 15px;
+    /* border: 2px solid white; */
+    background-color: #282b30;
+    padding: 6px;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+  .control-board__label {
+    font-size: 14px;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  
+  .control-board__checkbox {
+    margin-right: 4px;
+  }
+  
+  .control-board__local-time {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  
+  .control-board__local-time span {
+    display: block;
+  }
+  
+  .control-board__radio-group {
+    margin-bottom: 8px;
+  }
+  
+  .control-board__radio {
+    margin-right: 4px;
+  }
+
+  .day-night-card{
+    margin-right: 4px;
+  }
+
+  .controlboard_second{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    flex: 1;
+  }
+
+
+  input[type="checkbox"],
+input[type="radio"]{
+	width: 1.2em;
+	height: 1.2em;
+	margin-right: 0.5rem;
+    margin-left: 0.5em;
+}
